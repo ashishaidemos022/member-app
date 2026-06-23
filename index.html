@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Vivinter — My space</title>
+<style>
+:root{--teal:#0E7C66;--teal-d:#0a5f4e;--ink:#0f2e28;--muted:#6b7d78;--bg:#eef2f1;--card:#fff;--line:#e3eae8;--app-w:460px}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.app{max-width:var(--app-w);margin:0 auto;min-height:100vh;position:relative;overflow:hidden;background:var(--bg)}
+
+/* ---------- HOME ---------- */
+.view{min-height:100vh;padding-bottom:92px}
+.top{background:linear-gradient(135deg,var(--teal),var(--teal-d));color:#fff;padding:20px 20px 28px;border-radius:0 0 24px 24px}
+.brand{display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:800;letter-spacing:.5px;font-size:18px}
+.chip{background:rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600}
+.hello{font-size:25px;font-weight:700;margin-top:20px}
+.sub{opacity:.85;font-size:13px;margin-top:3px}
+.wrap{padding:18px 16px}
+.h{font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:700;margin:8px 4px 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 2px rgba(16,40,35,.04)}
+.req{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.rt{font-weight:600;font-size:15px}
+.rs{color:var(--muted);font-size:12px;margin-top:3px}
+.pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.p-in_progress{background:#FEF3D7;color:#9A6700}
+.p-awaiting_backoffice{background:#E7EEFB;color:#2D52A8}
+.p-processed{background:#DDF1E6;color:#0E7C66}
+.p-closed{background:#EEF0F0;color:#66726f}
+.chatcard{background:linear-gradient(135deg,#0E7C66,#0a5f4e);color:#fff;border:none}
+.chatcard .rt{color:#fff}.chatcard .ctxt{opacity:.92;font-size:13px;margin:6px 0 14px;line-height:1.45}
+.btn{background:#fff;color:var(--teal);font-weight:700;border:none;border-radius:12px;padding:12px 18px;font-size:15px;cursor:pointer;width:100%}
+.foot{position:fixed;left:0;right:0;bottom:0;max-width:var(--app-w);margin:0 auto;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:10px 0 16px;z-index:5}
+.fi{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer}
+.fi.active{color:var(--teal)}
+.dot{width:22px;height:22px;border-radius:7px;background:currentColor;opacity:.85}
+.skel{color:var(--muted);font-size:14px;padding:10px 4px}
+
+/* ---------- CHAT SCREEN (native, in-app) ---------- */
+#chatView{position:absolute;inset:0;background:#f5f8f7;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:20;visibility:hidden}
+#chatView.open{transform:translateX(0);visibility:visible}
+.chead{background:linear-gradient(135deg,var(--teal),var(--teal-d));color:#fff;
+  padding:14px 14px;display:flex;align-items:center;gap:12px;flex:0 0 auto}
+.cback{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;background:rgba(255,255,255,.14);flex:0 0 auto}
+.cback svg{width:18px;height:18px;stroke:#fff;stroke-width:2.4;fill:none}
+.cav{width:40px;height:40px;border-radius:50%;background:#fff;color:var(--teal);font-weight:800;
+  display:flex;align-items:center;justify-content:center;font-size:16px;position:relative;flex:0 0 auto}
+.cav .on{position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:50%;background:#34d399;border:2px solid var(--teal-d)}
+.cmeta{line-height:1.25}
+.cname{font-weight:700;font-size:15px}
+.cstat{font-size:11.5px;opacity:.88;display:flex;align-items:center;gap:5px}
+.cbody{flex:1 1 auto;position:relative;overflow:hidden}
+
+/* Dock the Talkdesk webchat so it FILLS the app frame instead of floating as a card */
+#chatBody #tdWebchat{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+/* flatten the SDK's outer shell(s) to fill the frame and drop the floating-card chrome.
+   targets the webchat's outer wrappers by common class patterns (exact names are hashed) */
+#chatBody #tdWebchat > *,
+#chatBody #tdWebchat [class*="webchat" i],
+#chatBody #tdWebchat [class*="window" i],
+#chatBody #tdWebchat [class*="wrapper" i],
+#chatBody #tdWebchat [class*="-root" i],
+#chatBody #tdWebchat [class*="Root"],
+#chatBody #tdWebchat [class*="widget" i]{
+  position:absolute!important;inset:0!important;
+  width:100%!important;height:100%!important;
+  max-width:100%!important;max-height:100%!important;
+  min-width:0!important;min-height:100%!important;
+  margin:0!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;
+  border-radius:0!important;box-shadow:none!important;transform:none!important}
+#chatBody #tdWebchat iframe{width:100%!important;height:100%!important;border:0!important;border-radius:0!important}
+/* hide the default floating launcher bubble — the app opens chat itself */
+[class*="launcher" i],[class*="Launcher"],[data-td-launcher],
+#chatBody #tdWebchat [class*="bubble" i]{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HOME -->
+  <div class="view" id="home">
+    <div class="top">
+      <div class="brand"><div class="logo">vivinter</div><div class="chip" id="chip">…</div></div>
+      <div class="hello" id="hello">Hi</div>
+      <div class="sub">Your health benefits, in one place</div>
+    </div>
+    <div class="wrap">
+      <div class="h">My requests</div>
+      <div id="reqs"><div class="skel">Loading your requests…</div></div>
+      <div class="h">Need help?</div>
+      <div class="card chatcard">
+        <div class="rt">Chat with a Vivinter advisor</div>
+        <div class="ctxt">Ask about a reimbursement, a pre-approval, or anything on your cover — we already have your file.</div>
+        <button class="btn" id="chatBtn" onclick="openChat()">Start a chat</button>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="fi active"><div class="dot"></div>Home</div>
+      <div class="fi"><div class="dot"></div>Requests</div>
+      <div class="fi" onclick="openChat()"><div class="dot"></div>Chat</div>
+      <div class="fi"><div class="dot"></div>Profile</div>
+    </div>
+  </div>
+
+  <!-- CHAT (native app screen) -->
+  <div id="chatView">
+    <div class="chead">
+      <div class="cback" onclick="closeChat()" aria-label="Back">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </div>
+      <div class="cav">V<span class="on"></span></div>
+      <div class="cmeta">
+        <div class="cname">Vivinter advisor</div>
+        <div class="cstat">Online · we already have your file</div>
+      </div>
+    </div>
+    <div class="cbody" id="chatBody"></div>
+  </div>
+
+</div>
+
+<script>
+var SUPA="https://mnrseaapxpofdznnqrsv.supabase.co";
+var ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ucnNlYWFweHBvZmR6bm5xcnN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1MjIyNzUsImV4cCI6MjA2ODA5ODI3NX0.TgUoEQKHbasSkk9b7gDXRsQTPY5m6COOSFRlO8h-Xe0";
+var H={apikey:ANON,Authorization:"Bearer "+ANON};
+var member=null, chatReady=false;
+var TYPE={dental_preapproval:"Dental pre-approval",optical_reimbursement:"Optical reimbursement",cost_estimate:"Treatment estimate",complaint:"Complaint"};
+var STAT={in_progress:"In progress",awaiting_backoffice:"With back office",processed:"Processed",closed:"Closed"};
+function esc(s){return (s||"").replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}
+
+function renderCases(cases){
+  var el=document.getElementById("reqs");
+  if(!cases||!cases.length){el.innerHTML='<div class="skel">No active requests.</div>';return;}
+  el.innerHTML=cases.map(function(c){
+    var t=TYPE[c.type]||c.type; var s=STAT[c.status]||c.status;
+    return '<div class="card req"><div><div class="rt">'+esc(t)+'</div><div class="rs">'+esc(c.case_number)+(c.amount?(' · €'+Number(c.amount).toFixed(0)):'')+'</div></div><span class="pill p-'+c.status+'">'+esc(s)+'</span></div>';
+  }).join("");
+}
+
+function load(){
+  fetch(SUPA+"/rest/v1/diot_insured?member_number=eq.VIV-0049582&select=*",{headers:H}).then(function(r){return r.json();}).then(function(m){
+    member=(m&&m[0])||{};
+    document.getElementById("hello").textContent="Hi "+(member.first_name||"");
+    var ln=(member.last_name||" "); document.getElementById("chip").textContent=(member.first_name||"")+" "+ln.charAt(0)+". · "+(member.member_number||"");
+    return fetch(SUPA+"/rest/v1/diot_cases?insured_id=eq."+member.id+"&select=*&order=created_at.desc",{headers:H});
+  }).then(function(r){return r.json();}).then(function(cases){
+    renderCases(cases);
+    if(member&&member.chat_enabled) initChat();
+  }).catch(function(){document.getElementById("reqs").innerHTML='<div class="skel">Could not load requests.</div>';});
+}
+
+/* Mount the Talkdesk webchat INSIDE the in-app chat screen (#chatBody),
+   not on document.body — so it lives in the app frame, not as a floating widget. */
+function initChat(){
+  if(window.TalkdeskChatSDK || chatReady) return;
+  var node="tdWebchat";
+  var div=document.createElement("div"); div.id=node;
+  document.getElementById("chatBody").appendChild(div);
+  var s=document.createElement("script"); s.type="text/javascript"; s.charset="UTF-8"; s.id="tdwebchatscript";
+  s.src="https://talkdeskchatsdk.talkdeskapp.com/v2/talkdeskchatsdk.js"; s.async=true;
+  var first=document.getElementsByTagName("script")[0]; first.parentNode.insertBefore(s,first);
+  s.onload=function(){
+    try{
+      window.webchat=TalkdeskChatSDK(node,{touchpointId:member.chat_touchpoint_id||"3a0bf987389f4098a6da8a5d45dee737",accountId:"",region:"td-us-1"});
+      webchat.init({enableValidation:false,enableEmoji:true,enableUserInput:true,enableAttachments:true});
+      function setCtx(){try{webchat.setContextParam({member_number:member.member_number,insured_id:member.id,full_name:(member.first_name||"")+" "+(member.last_name||"")});}catch(e){}}
+      webchat.onConversationStart=setCtx; webchat.onOpenWebchat=setCtx;
+      chatReady=true;
+    }catch(e){}
+  };
+}
+
+function openChat(){
+  document.getElementById("chatView").classList.add("open");
+  if(member&&member.chat_enabled) initChat();
+  // expand the webchat inline once it's ready
+  var tries=0;
+  (function go(){
+    try{ if(window.webchat&&webchat.openWebchat){webchat.openWebchat();return;} if(window.webchat&&webchat.open){webchat.open();return;} }catch(e){}
+    if(tries++<40) setTimeout(go,150);
+  })();
+}
+function closeChat(){
+  document.getElementById("chatView").classList.remove("open");
+  try{ if(window.webchat&&webchat.closeWebchat) webchat.closeWebchat(); }catch(e){}
+}
+
+load();
+</script>
+</body>
+</html>
