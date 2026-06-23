@@ -165,7 +165,7 @@ function initChat(){
   var first=document.getElementsByTagName("script")[0]; first.parentNode.insertBefore(s,first);
   s.onload=function(){
     try{
-      window.webchat=TalkdeskChatSDK(node,{touchpointId:member.chat_touchpoint_id||"3a0bf987389f4098a6da8a5d45dee737",accountId:"",region:"td-us-1"});
+      window.webchat=TalkdeskChatSDK(node,{touchpointId:"3a0bf987389f4098a6da8a5d45dee737",accountId:"",region:"td-us-1"});
       webchat.init({enableValidation:false,enableEmoji:true,enableUserInput:true,enableAttachments:true});
       function setCtx(){try{webchat.setContextParam({member_number:member.member_number,insured_id:member.id,full_name:(member.first_name||"")+" "+(member.last_name||"")});}catch(e){}}
       webchat.onConversationStart=setCtx; webchat.onOpenWebchat=setCtx;
