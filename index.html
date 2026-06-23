@@ -33,10 +33,36 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 .chatcard .rt{color:#fff}.chatcard .ctxt{opacity:.92;font-size:13px;margin:6px 0 14px;line-height:1.45}
 .btn{background:#fff;color:var(--teal);font-weight:700;border:none;border-radius:12px;padding:12px 18px;font-size:15px;cursor:pointer;width:100%}
 .foot{position:fixed;left:0;right:0;bottom:0;max-width:var(--app-w);margin:0 auto;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:10px 0 16px;z-index:5}
+/* floating chat launcher — sits at the bottom of the home screen, opens the chat page */
+.fab{position:fixed;bottom:84px;right:max(16px,calc(50% - var(--app-w)/2 + 16px));
+  width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;z-index:6;
+  background:linear-gradient(135deg,var(--teal),var(--teal-d));color:#fff;
+  box-shadow:0 8px 20px rgba(14,124,102,.42);display:flex;align-items:center;justify-content:center}
+.fab svg{width:27px;height:27px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.fab .badge{position:absolute;top:0;right:0;width:14px;height:14px;border-radius:50%;background:#34d399;border:2px solid #fff}
 .fi{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer}
 .fi.active{color:var(--teal)}
 .dot{width:22px;height:22px;border-radius:7px;background:currentColor;opacity:.85}
 .skel{color:var(--muted);font-size:14px;padding:10px 4px}
+
+/* quick actions */
+.qa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.qa .t{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 4px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;text-align:center}
+.qa .ic{width:38px;height:38px;border-radius:11px;background:#e7f1ee;display:flex;align-items:center;justify-content:center}
+.qa .ic svg{width:20px;height:20px;fill:none;stroke:var(--teal);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.qa .l{font-size:10.5px;font-weight:600;color:var(--ink);line-height:1.2}
+/* cover card */
+.cover .ctop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.cover .plan{font-weight:700;font-size:15px}
+.cover .badge2{font-size:11px;font-weight:700;color:var(--teal);background:#e7f1ee;padding:4px 10px;border-radius:999px}
+.cover .crow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
+.cover .ck{color:var(--muted)}.cover .cv{font-weight:600}
+/* good to know */
+.kb{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 15px;margin-bottom:10px;box-shadow:0 1px 2px rgba(16,40,35,.04)}
+.kb .kt{font-weight:600;font-size:14px;margin-bottom:4px}
+.kb .kp{color:var(--muted);font-size:12.5px;line-height:1.45}
+.kb .ktag{display:inline-block;margin-top:9px;font-size:10.5px;font-weight:700;color:var(--teal);background:#e7f1ee;padding:3px 9px;border-radius:999px}
+.about .ap{color:var(--muted);font-size:12.5px;line-height:1.5;margin-top:5px}
 
 /* ---------- CHAT SCREEN (native, in-app) ---------- */
 #chatView{position:absolute;inset:0;background:#f5f8f7;display:flex;flex-direction:column;
@@ -91,11 +117,44 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
     <div class="wrap">
       <div class="h">My requests</div>
       <div id="reqs"><div class="skel">Loading your requests…</div></div>
+
+      <div class="h">Quick actions</div>
+      <div class="qa">
+        <div class="t" onclick="openChat()">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></div>
+          <div class="l">New claim</div>
+        </div>
+        <div class="t">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+          <div class="l">Find care</div>
+        </div>
+        <div class="t">
+          <div class="ic"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg></div>
+          <div class="l">My card</div>
+        </div>
+        <div class="t">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg></div>
+          <div class="l">Documents</div>
+        </div>
+      </div>
+
+      <div class="h">Your cover</div>
+      <div class="card cover" id="cover"><div class="skel">Loading your cover…</div></div>
+
+      <div class="h">Good to know</div>
+      <div id="kb"><div class="skel">Loading…</div></div>
+
       <div class="h">Need help?</div>
       <div class="card chatcard">
         <div class="rt">Chat with a Vivinter advisor</div>
         <div class="ctxt">Ask about a reimbursement, a pre-approval, or anything on your cover — we already have your file.</div>
         <button class="btn" id="chatBtn" onclick="openChat()">Start a chat</button>
+      </div>
+
+      <div class="h">About Vivinter</div>
+      <div class="card about">
+        <div class="rt">Part of Diot‑Siaci</div>
+        <div class="ap">Vivinter is the health &amp; benefits brand of Diot‑Siaci, one of France's leading insurance &amp; benefits brokers — supporting members with everyday cover, fast reimbursements and easy access to care.</div>
       </div>
     </div>
     <div class="foot">
@@ -121,6 +180,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
     <div class="cbody" id="chatBody"></div>
   </div>
 
+  <!-- bottom chat launcher (home) -->
+  <button class="fab" onclick="openChat()" aria-label="Chat with a Vivinter advisor">
+    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 17 0z"></path></svg>
+    <span class="badge"></span>
+  </button>
+
 </div>
 
 <script>
@@ -141,11 +206,42 @@ function renderCases(cases){
   }).join("");
 }
 
+function renderCover(m,co){
+  var risk=(m.risk==='sante'?'Santé':(m.risk||''));
+  var plan=(m.brand||'Vivinter')+(risk?(' · '+risk):'');
+  document.getElementById("cover").innerHTML=
+    '<div class="ctop"><div class="plan">'+esc(plan)+'</div><span class="badge2">Active</span></div>'+
+    '<div class="crow"><span class="ck">Employer</span><span class="cv">'+esc(co.name||'—')+'</span></div>'+
+    '<div class="crow"><span class="ck">Contract</span><span class="cv">'+esc(co.contract_number||'—')+'</span></div>'+
+    '<div class="crow"><span class="ck">Member</span><span class="cv">'+esc(m.member_number||'—')+'</span></div>';
+}
+function renderKb(arts){
+  var el=document.getElementById("kb");
+  if(!arts||!arts.length){el.innerHTML='<div class="skel">Nothing new right now.</div>';return;}
+  el.innerHTML=arts.map(function(a){
+    var body=(a.body||""); var prev=body.slice(0,130)+(body.length>130?"…":"");
+    var tag=(a.tags||"").split(",")[0].trim();
+    return '<div class="kb"><div class="kt">'+esc(a.title)+'</div><div class="kp">'+esc(prev)+'</div>'+(tag?'<span class="ktag">'+esc(tag)+'</span>':'')+'</div>';
+  }).join("");
+}
+function loadCover(){
+  if(!member.company_id){renderCover(member,{});return;}
+  fetch(SUPA+"/rest/v1/diot_company?id=eq."+member.company_id+"&select=name,contract_number",{headers:H})
+    .then(function(r){return r.json();}).then(function(co){renderCover(member,(co&&co[0])||{});})
+    .catch(function(){renderCover(member,{});});
+}
+function loadKb(){
+  fetch(SUPA+"/rest/v1/diot_kb_articles?brand=eq."+encodeURIComponent(member.brand||"Vivinter")+"&select=title,body,tags&order=created_at.desc&limit=3",{headers:H})
+    .then(function(r){return r.json();}).then(renderKb)
+    .catch(function(){document.getElementById("kb").innerHTML='';});
+}
+
 function load(){
   fetch(SUPA+"/rest/v1/diot_insured?member_number=eq.VIV-0049582&select=*",{headers:H}).then(function(r){return r.json();}).then(function(m){
     member=(m&&m[0])||{};
     document.getElementById("hello").textContent="Hi "+(member.first_name||"");
     var ln=(member.last_name||" "); document.getElementById("chip").textContent=(member.first_name||"")+" "+ln.charAt(0)+". · "+(member.member_number||"");
+    loadCover(); loadKb();
     return fetch(SUPA+"/rest/v1/diot_cases?insured_id=eq."+member.id+"&select=*&order=created_at.desc",{headers:H});
   }).then(function(r){return r.json();}).then(function(cases){
     renderCases(cases);
